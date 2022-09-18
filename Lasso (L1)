@@ -1,0 +1,24 @@
+# install packages
+library(ISLR)
+library(glmnet)
+library(dplyr)
+library(tidyr)
+
+# import data
+rent.bed.kde.df <- read.csv("Costar R processed, All column, no size, by bed, no pop, no crime.csv")
+names(rent.bed.kde.df)
+x = model.matrix(rent.bed.kde.short.stand.pdf$Effective_Rent_Bed~., data = rent.bed.kde.short.stand.pdf)[,-1]
+y = rent.bed.kde.short.stand.pdf$Effective_Rent_Bed
+
+# create Lasso Model
+cv.out.lasso=cv.glmnet(x,y,nfolds=10,alpha=1)
+best.lam.lasso=cv.out.lasso$lambda.min
+best.lam.lasso
+
+# plot model result
+plot(cv.out.lasso)
+abline(v = log(cv.out.lasso$lambda.min), col="red", lwd=3, lty=2)
+
+# plot MSE of model result
+lasso.mod <- glmnet(x, y, alpha=1)
+plot(lasso.mod,s = best.lam.lasso, cex = 0.2, label = TRUE)
