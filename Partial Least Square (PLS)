@@ -1,0 +1,31 @@
+# install packages
+library(ISLR)
+library(glmnet)
+library(dplyr)
+library(tidyr)
+library(caret)
+library(pls)
+
+# import data
+setwd("/cloud/project/housing crisis/pls_new")
+rent.size.kde.df <- read.csv("to team.csv")
+names(rent.size.kde.df)
+
+# create PLS model
+n_comps=35
+rent.size.kde.short.stand.pdf.pls <- plsr(rent.size.kde.short.stand.pdf$Effective_Rent_SF~.,
+  ncomp = n_comps, data = rent.size.kde.short.stand.pdf, validation = "LOO")
+summary(rent.size.kde.short.stand.pdf.pls)
+
+# plot RMSEP
+plot(RMSEP(rent.size.kde.short.stand.pdf.pls), legendpos = "topright")
+RMSEP(rent.size.kde.short.stand.pdf.pls, data = rent.bed.kde.short.stand.pdf.pls)
+# scatter plot
+plot(rent.size.kde.short.stand.pdf.pls, ncomp = 8, asp = 1, line = TRUE)
+# explained variance
+explvar(rent.size.kde.short.stand.pdf.pls)
+# PLSR result
+predictions <- predict(rent.size.kde.short.stand.pdf.pls, type="response")
+
+#variable importance
+varImp(rent.size.kde.short.stand.pdf.pls, scale=FALSE)
